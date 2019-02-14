@@ -12,7 +12,13 @@ const getClearUrl = url => {
   if (idNumber && lastIndex !== -1) {
     return url.slice(0, lastIndex);
   }
-
 };
 
-module.exports = getClearUrl;
+const getRouteHandler = (routeConfig, url) => {
+  const clearUrl = getClearUrl(url);
+
+  
+  return routeConfig[clearUrl];
+};
+
+module.exports = getRouteHandler;

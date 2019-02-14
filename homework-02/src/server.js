@@ -11,13 +11,14 @@ const getRouteHandler = require("./helpers/get-route-handler");
 //   key: fs.readFileSync("./certificate/server.key"),
 // };
 
+
 const startServer = port => {
   const server = http
     .createServer((req, res) => {
-      const parseUrl = url.parse(req.url).pathname;
+      const parseUrl = url.parse(req.url);
 
       const func = getRouteHandler(router, parseUrl) || router.default;
-      console.log(func);
+
       func(req, res);
     })
     .listen(port);

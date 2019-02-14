@@ -1,23 +1,39 @@
 const hasNumber = myString => /\d/.test(myString);
 
+const getQueryUrl = url => {
+  const { path } = url;
+  const indexOf = path.indexOf("=");
+  if (indexOf !== -1) {
+    const urlString = path.slice(0, indexOf);
+
+    return urlString;
+  }
+};
+
 const getClearUrl = url => {
-  if (!hasNumber(url)) {
-    return url;
+  const { query } = url;
+  const { pathname } = url;
+
+  if (query) {
+    return getQueryUrl(url);
   }
 
-  const lastIndex = url.lastIndexOf("/");
-  const idString = url.slice(lastIndex + 1).trim();
+  if (!hasNumber(pathname)) {
+    return pathname;
+  }
+
+  const lastIndex = pathname.lastIndexOf("/");
+  const idString = pathname.slice(lastIndex + 1).trim();
   const idNumber = Number(idString);
 
   if (idNumber && lastIndex !== -1) {
-    return url.slice(0, lastIndex);
+    return pathname.slice(0, lastIndex);
   }
 };
 
 const getRouteHandler = (routeConfig, url) => {
   const clearUrl = getClearUrl(url);
 
-  
   return routeConfig[clearUrl];
 };
 

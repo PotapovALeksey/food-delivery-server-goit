@@ -1,0 +1,26 @@
+{
+  "name": "food-delivery-server-goit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./src/server.js",
+    "debug": "nodemon --inspect ./src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PotapovALeksey/food-delivery-server-goit.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PotapovALeksey/food-delivery-server-goit/issues"
+  },
+  "homepage": "https://github.com/PotapovALeksey/food-delivery-server-goit#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "nodemon": "^1.18.10",
+    "util": "^0.11.1"
+  }
+}

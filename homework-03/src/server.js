@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const usersRouter = require("./router/users/router");
 const mainRouter = require("./router/main/router");
 const productsRouter = require("./router/products/router");
+const orderRouter = require("./router/orders/router");
 const app = express();
 
 const errorHandler = (err, req, res, next) => {
@@ -16,6 +17,7 @@ app
   .use("/", mainRouter)
   .use("/users", usersRouter)
   .use("/products", productsRouter)
+  .use("/orders", orderRouter)
   .use(errorHandler);
 
 module.exports = app;

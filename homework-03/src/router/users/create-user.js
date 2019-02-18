@@ -41,7 +41,7 @@ const response = (res, user) => {
 
 const createUser = (req, res, next) => {
   const reqBody = req.body;
-  console.log("reqBody", reqBody);
+
   const userUnique = {
     id: Date.now(),
     ...reqBody

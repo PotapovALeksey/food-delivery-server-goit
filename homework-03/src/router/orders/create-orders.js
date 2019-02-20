@@ -27,10 +27,12 @@ const response = (res, user) => {
 
 const writeFile = util.promisify(fs.writeFile);
 
+
 const readFile = path => fs.readFileSync(path);
 
 const getProductsOrder = (array, orderIds) =>
-  array.filter(el => orderIds.includes(el.id));
+array.filter(el => orderIds.includes(el.id));
+
 
 const availabilityProducts = products => {
   if (products.length === 0) {

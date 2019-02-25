@@ -1,87 +1,53 @@
-const path = require("path");
-const fs = require("fs");
-const util = require("util");
-const pathDbProducts = path.join(__dirname, "../../", "db/all-products.json");
+const Order = require("../../modules/db/schemes/orderScheme");
+const User = require("../../modules/db/schemes/userScheme");
 
-const createFolder = path => {
-  if (fs.existsSync(path)) {
-    return Promise.resolve();
-  }
+const saveOrderFromUser = async order => {
+  User.findById(order.creator)
+    .then(user => {
+      const orderId = order._id;
+      user.orders = [...user.orders, orderId];
+      console.log("user", user);
+      return Promise.resolve(user);
+    })
+    .save()
+    .catch(notFoundUser);
+};
+const createOrder = req => {
+  const order = req.body;
 
-  fs.mkdir(path, (err, folder) => {
-    if (err) throw err;
-    return Promise.resolve();
+  return new Order({
+    ...order
   });
 };
 
-const response = (res, user) => {
-  const successUser = {
-    status: "success",
-    user: user
-  };
+const saveOrder = (req, res, next) => {
+  const newOrder = createOrder(req);
 
-  res.set("Content-type", "application/json");
-  res.status(200);
-  res.json(successUser);
-};
-
-const writeFile = util.promisify(fs.writeFile);
-
-
-const readFile = path => fs.readFileSync(path);
-
-const getProductsOrder = (array, orderIds) =>
-array.filter(el => orderIds.includes(el.id));
-
-
-const availabilityProducts = products => {
-  if (products.length === 0) {
-    const responseObj = { status: "failed", order: null };
-
-    res.set("Content-type", "application/json");
+  const sendError = () => {
     res.status(400);
-    res.json(responseObj);
-    return;
-  }
-};
-
-const createOrder = (req, res, next) => {
-  const order = req.body;
-  const userId = order.user;
-  const orderProductsIds = order.products;
-  const pathUser = path.join(
-    __dirname,
-    "../../",
-    "db/users",
-    `${userId}`,
-    "/orders"
-  );
-
-  const allProducts = JSON.parse(readFile(pathDbProducts));
-
-  const productsIdOrder = getProductsOrder(allProducts, orderProductsIds);
-
-  availabilityProducts(productsIdOrder);
-
-  const newOrder = {
-    status: "success",
-    order: {
-      id: Date.now(),
-      ...order
-    }
+    res.json({
+      status: "order not created!"
+    });
+  };
+  const notFoundUser = () => {
+    res.status(400);
+    res.json({
+      status: "user not found!"
+    });
+  };
+  const sendResponse = order => {
+    console.log("order", order);
+    res.set("Content-type", "application/json");
+    res.status(200);
+    res.json({ status: "success", order });
   };
 
-  const pathUserOrder = path.join(
-    __dirname,
-    "../../",
-    "db/users",
-    `${userId}`,
-    `/orders/${newOrder.order.id}.json`
+  saveOrderFromUser(newOrder).then(
+    newOrder
+      .save()
+      .then(sendResponse)
+      .catch(sendError)
   );
-
-  createFolder(pathUser)
-    .then(writeFile(pathUserOrder, JSON.stringify(newOrder)))
-    .then(response(res, newOrder));
 };
 
-module.exports = createOrder;
+module.exports = saveOrder;

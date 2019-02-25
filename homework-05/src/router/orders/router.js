@@ -1,9 +1,8 @@
 const express = require("express");
-const isValidIdUser = require("./check-valid-user");
 const createOrder = require("./create-orders");
-
+const getOrderById = require("./get-order-byid");
 const orderRouter = express.Router();
 
-orderRouter.post("/", isValidIdUser, createOrder);
+orderRouter.post("/", createOrder).get("/:id", getOrderById);
 
 module.exports = orderRouter;

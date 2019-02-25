@@ -1,17 +1,6 @@
 const Order = require("../../modules/db/schemes/orderScheme");
 const User = require("../../modules/db/schemes/userScheme");
 
-const saveOrderFromUser = async order => {
-  User.findById(order.creator)
-    .then(user => {
-      const orderId = order._id;
-      user.orders = [...user.orders, orderId];
-      console.log("user", user);
-      return Promise.resolve(user);
-    })
-    .save()
-    .catch(notFoundUser);
-};
 const createOrder = req => {
   const order = req.body;
 
@@ -23,30 +12,51 @@ const createOrder = req => {
 const saveOrder = (req, res, next) => {
   const newOrder = createOrder(req);
 
-  const sendError = () => {
-    res.status(400);
-    res.json({
-      status: "order not created!"
-    });
+  const saveOrderFromUser = async order => {
+    const userId = order.creator;
+
+    User.findById(userId)
+      .then(user => {
+        if (!user) return Promise.reject();
+
+        const orderId = order._id;
+        user.orders = [...user.orders, orderId];
+
+        user.save().then(order);
+
+        return Promise.resolve(order);
+      })
+      .catch(notFoundUser);
   };
+
   const notFoundUser = () => {
     res.status(400);
     res.json({
       status: "user not found!"
     });
   };
+
+  const sendError = () => {
+    res.status(400);
+    res.json({
+      status: "order not created!"
+    });
+  };
+
   const sendResponse = order => {
-    console.log("order", order);
     res.set("Content-type", "application/json");
     res.status(200);
     res.json({ status: "success", order });
   };
 
   saveOrderFromUser(newOrder).then(
-    newOrder
-      .save()
-      .then(sendResponse)
-      .catch(sendError)
+    data => {
+      console.log("data", data);
+    }
+    // newOrder
+    //   .save()
+    //   .then(sendResponse)
+    //   .catch(sendError)
   );
 };
 

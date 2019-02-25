@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const timestamp = require("../middleware/timestamp");
 const orderSchema = new Schema({
-  creator: String,
+  creator: { type: String, required: true },
   productsList: Array,
   deliveryType: String,
   deliveryAdress: String,

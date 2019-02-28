@@ -15,7 +15,7 @@ const saveOrder = (req, res, next) => {
   const saveOrderFromUser = async order => {
     const userId = order.creator;
 
-    User.findById(userId)
+    return User.findById(userId)
       .then(user => {
         if (!user) return Promise.reject();
 
@@ -51,12 +51,14 @@ const saveOrder = (req, res, next) => {
 
   saveOrderFromUser(newOrder).then(
     data => {
-      console.log("data", data);
+      if (!data) return;
+      data
+        .save()
+        .then(sendResponse)
+        .catch(sendError);
     }
     // newOrder
-    //   .save()
-    //   .then(sendResponse)
-    //   .catch(sendError)
+    //
   );
 };
 

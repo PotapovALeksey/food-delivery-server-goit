@@ -2,12 +2,6 @@ const fs = require("fs");
 const path = require("path");
 const qs = require("querystring");
 
-const buffer = new Buffer(
-  "But still I'm having memories of high speeds when the cops crashed\n" +
-    "As I laugh, pushin the gas while my Glocks blast\n" +
-    "We was young and we was dumb but we had heart"
-);
-
 const saveUser = (pathDb, user, res) => {
   let resolveSuccess;
   fs.open(pathDb, "w", function(err, fd) {

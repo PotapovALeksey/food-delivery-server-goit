@@ -10,7 +10,7 @@ const getId = url => {
   }
 };
 
-const readFile = (id, src) => JSON.parse(fs.readFileSync(src));
+const readFile = src => JSON.parse(fs.readFileSync(src));
 
 const getProductId = (array, id) => array.find(el => Number(el.id) === id);
 
@@ -19,7 +19,7 @@ const sendProduct = (req, res) => {
   const id = Number(getId(parseUrl));
   const pathDb = path.join(__dirname, "../../", "db/all-products.json");
 
-  const allProduct = readFile(id, pathDb);
+  const allProduct = readFile(pathDb);
   const idProduct = getProductId(allProduct, id);
 
   const responseBody = {
